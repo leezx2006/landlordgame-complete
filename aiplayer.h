@@ -3,15 +3,22 @@
 
 #include "player.h"
 
-class AIPlayer : public Player {
+class AIPlayer : public Player
+{
     Q_OBJECT
 public:
     explicit AIPlayer(QObject *parent = nullptr);
-    void makeDecision(const QVector<Card>& lastPlay, bool isNewRound) override;
+
+    QList<Card*> playCards(QList<Card*> lastCards) override;
 
 private:
-         // AI决策逻辑...
+    QList<Card*> findBestCardsToPlay(QList<Card*> lastCards);
+    QList<Card*> findSmallestSingle();
+    QList<Card*> findBomb();
+    QList<Card*> findRocket();
+    QList<Card*> findLargerSingle(const QList<Card*>& lastCards);
+    QList<Card*> findLargerPair(const QList<Card*>& lastCards);
+     QList<Card*> findSmallestPair();
 };
 
 #endif // AIPLAYER_H
-```

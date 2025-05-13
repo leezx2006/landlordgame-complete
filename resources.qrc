@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>sounds/background.mp3</file>
+        <file>images/card_back.jpg</file>
+        <file>images/background.png</file>
+    </qresource>
+    <qresource prefix="/o"/>
+    <qresource prefix="/images"/>
+</RCC>

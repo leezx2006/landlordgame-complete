@@ -1,43 +1,44 @@
 #include "deck.h"
 #include <QRandomGenerator>
 
-Deck::Deck() { reset(); }
-
-void Deck::reset() {
-    m_cards.clear();
-    // 生成牌堆逻辑...
+Deck::Deck(QObject *parent) : QObject(parent)
+{
 }
 
-// 实现其他成员函数...
+Deck::~Deck()
+{
+    qDeleteAll(m_cards);
+}
 
-#ifndef PLAYER_H
-#define PLAYER_H
+void Deck::initialize()
+{
+    qDeleteAll(m_cards);
+    m_cards.clear();
 
-#include <QObject>
-#include "card.h"
+    // 添加普通牌
+    for (int s = 0; s < 4; ++s) {
+        for (int r = 3; r <= 15; ++r) {
+            m_cards.append(new Card(static_cast<Card::Suit>(s), static_cast<Card::Rank>(r)));
+        }
+    }
 
-      class Player : public QObject {
-    Q_OBJECT
-public:
-    enum Type { Human, AI };
-    enum Role { Landlord, Farmer };
+    // 添加大小王
+    m_cards.append(new Card(Card::Joker, Card::SmallJoker));
+    m_cards.append(new Card(Card::Joker, Card::BigJoker));
+}
 
-    explicit Player(QObject *parent = nullptr, Type type = Human);
+void Deck::shuffle()
+{
+    for (int i = 0; i < m_cards.size() - 1; ++i) {
+        int j = QRandomGenerator::global()->bounded(i, m_cards.size());
+        m_cards.swapItemsAt(i, j);
+    }
+}
 
-    virtual void makeDecision(const QVector<Card>& lastPlay, bool isNewRound) = 0;
-    void receiveCards(const QVector<Card>& cards);
-    void playCards(const QVector<Card>& cards);
+Card* Deck::drawCard()
+{
+    if (m_cards.isEmpty())
+        return nullptr;
 
-    // ...其他成员函数...
-
-signals:
-    void played(const QVector<Card>& cards);
-    void passed();
-
-protected:
-    QVector<Card> m_handCards;
-    Role m_role = Farmer;
-    Type m_type;
-};
-
-#endif // PLAYER_H
+    return m_cards.takeFirst();
+}

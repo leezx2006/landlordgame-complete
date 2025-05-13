@@ -5,35 +5,31 @@
 #include <QList>
 #include "card.h"
 
-class Player : public QObject {
+class Player : public QObject
+{
     Q_OBJECT
 public:
-    enum Type { Human, AI };
-    enum Role { Landlord, Farmer };
+    explicit Player(QObject *parent = nullptr);
 
-    explicit Player(QString name, Type type = Human, QObject *parent = nullptr);
-    virtual ~Player();
+    void addCard(Card *card);
+    void removeCard(Card *card);
+    void clearCards();
 
-    QString name() const;
-    Type type() const;
-    Role role() const;
-    void setRole(Role role);
-    QList<Card*> cards() const;
-    void addCard(Card* card);
-    void removeCard(Card* card);
-    int cardCount() const;
+    QList<Card*> cards() const { return m_cards; }
+    int cardCount() const { return m_cards.size(); }
 
-    virtual QList<Card*> play(const QList<Card*>& lastPlay) = 0;
+    bool hasCards() const { return !m_cards.isEmpty(); }
+    bool isLandlord() const { return m_isLandlord; }
+    void setLandlord(bool landlord) { m_isLandlord = landlord; }
+
+    virtual QList<Card*> playCards(QList<Card*> lastCards) = 0;
 
 signals:
-    void cardsPlayed(const QList<Card*>& cards);
-    void passTurn();
+    void cardsChanged();
 
 protected:
-    QString m_name;
-    Type m_type;
-    Role m_role;
     QList<Card*> m_cards;
+    bool m_isLandlord;
 };
 
 #endif // PLAYER_H
