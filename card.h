@@ -1,37 +1,34 @@
 #ifndef CARD_H
 #define CARD_H
 
-#include <QWidget>
-#include <QPixmap>
+#include <QObject>
+#include <QString>
 
-class Card : public QWidget {
+class Card : public QObject
+{
     Q_OBJECT
 public:
-    enum Suit { Spade, Heart, Club, Diamond, Joker };
-    enum Rank { Three=3, Four, Five, Six, Seven, Eight, Nine, Ten,
-                Jack, Queen, King, Ace, Two, SmallJoker, BigJoker };
+    enum Suit {
+        Spade, Heart, Club, Diamond, Joker
+    };
 
-    explicit Card(Suit suit, Rank rank, QWidget *parent = nullptr, bool isBack = false);
+    enum Rank {
+        Three = 3, Four, Five, Six, Seven, Eight, Nine, Ten,
+        Jack, Queen, King, Ace, Two, SmallJoker = 16, BigJoker = 17
+    };
 
-    QPixmap getImage() const;
-    bool operator<(const Card& other) const;
-    bool operator==(const Card& other) const;
+    explicit Card(Suit suit, Rank rank, QObject *parent = nullptr);
 
     Suit suit() const { return m_suit; }
     Rank rank() const { return m_rank; }
-    bool isJoker() const { return m_suit == Joker; }
-    void flip();
 
-protected:
-    void paintEvent(QPaintEvent *event) override;
+    QString suitString() const;
+    QString rankString() const;
+    QString toString() const;
 
 private:
     Suit m_suit;
     Rank m_rank;
-    bool m_isBack;
-    QPixmap m_frontImage;
-    QPixmap m_backImage;
-    QString imagePath() const;
 };
 
 #endif // CARD_H

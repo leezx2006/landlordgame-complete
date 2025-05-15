@@ -1,18 +1,25 @@
 #ifndef DECK_H
 #define DECK_H
 
-#include <QVector>
+#include <QObject>
+#include <QList>
 #include "card.h"
 
-class Deck {
+class Deck : public QObject
+{
+    Q_OBJECT
 public:
-    Deck();
+    explicit Deck(QObject *parent = nullptr);
+    ~Deck();
+
+    void initialize();
     void shuffle();
-    QVector<Card> dealCards(int count);
-    void reset();
+    Card* drawCard();
+    int cardCount() const { return m_cards.size(); }
+    bool isEmpty() const { return m_cards.isEmpty(); }
 
 private:
-    QVector<Card> m_cards;
+    QList<Card*> m_cards;
 };
 
 #endif // DECK_H
